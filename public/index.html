@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <link rel="stylesheet" href="./css/style.css" />
+  <body>
+    <header id="header">
+      <h1 id="logo">Fitness Social</h1>
+      <div id="header-btn-container">
+        <button
+          onclick="setCurrentSection(`login-page`)"
+          id="login-btn"
+          class="header-btn"
+        >
+          Login
+        </button>
+        <button
+          onclick="setCurrentSection(`signup-page`)"
+          id="signup-btn"
+          class="header-btn"
+        >
+          Signup
+        </button>
+        <div id="search-btn" class="header-btn">
+          <img src="./assets/search.png" height="40" width="40" alt="sea" />
+        </div>
+        <button onclick="LogoutUser()" id="logout-btn" class="header-btn">
+          Log Out
+        </button>
+      </div>
+    </header>
+
+    <section id="signup-page" class="page">
+      <h1 class="heading">Sign Up</h1>
+      <form onsubmit="SignUpUser(event)">
+        <label for="signup-email">Enter Your Email</label>
+        <input required type="text" id="signup-email" placeholder="Email" />
+        <label for="signup-name">Enter Your Name</label>
+        <input required type="text" id="signup-name" placeholder="Name" />
+        <label for="signup-password">Enter Your Password</label>
+        <input
+          required
+          type="text"
+          id="signup-password"
+          placeholder="Password"
+        />
+        <button type="submit" class="btn">Sign Up</button>
+      </form>
+    </section>
+    <section id="login-page" class="page">
+      <h1 class="heading">Login</h1>
+      <form onsubmit="LoginUser(event)">
+        <label for="login-email">Enter Your Email</label>
+        <input
+          required
+          type="text"
+          id="login-email"
+          name="email"
+          placeholder="Email"
+        />
+        <label for="login-password">Enter Your Password</label>
+        <input
+          required
+          type="text"
+          id="login-password"
+          name="password"
+          placeholder="Password"
+        />
+        <button type="submit" class="btn">Log In</button>
+      </form>
+    </section>
+    <section id="home" class="page">
+      <div>
+        <h1 id="heading">Home</h1>
+        <h1 id="userName">Name</h1>
+        <h1 id="userEmail">Name</h1>
+      </div>
+    </section>
+
+    <script src="./js/script.js"></script>
+  </body>
+</html>
