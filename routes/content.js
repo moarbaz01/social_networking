@@ -47,12 +47,15 @@ router.get(`/contents/:id`, async (req, res) => {
 
 router.post(`/contents`, checkUser, async (req, res) => {
   try {
-    const { title, body } = req.body;
-    const file = req.file;
-    const userId = req.user.id;
+    const { title, desc } = req.body;
+    const file = req.files?.image
+    if(req.files){
+      console.log("Req files: ",req.files?.image)
+    }
+    const email = req.user.email;
 
     const user = await db.collection("users").findOne({
-      _id: userId,
+      email: email,
     });
 
     if (!user) {
@@ -60,6 +63,8 @@ router.post(`/contents`, checkUser, async (req, res) => {
         message: "User not found",
       });
     }
+
+    const { password, ...userWithoutPassword } = user;
 
     const fileUpload = await uploadImage(file);
     if (fileUpload.error) {
@@ -69,10 +74,9 @@ router.post(`/contents`, checkUser, async (req, res) => {
     }
     const content = await db.collection("contents").insertOne({
       title: title,
-      author: userId,
       image: fileUpload.url,
-      body: body,
-      userId: userId,
+      desc: desc,
+      author: userWithoutPassword,
       likes: [],
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -87,9 +91,11 @@ router.post(`/contents`, checkUser, async (req, res) => {
       content: content,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       message: "Something went wrong",
     });
+ 
   }
 });
 
@@ -206,4 +212,4 @@ router.delete(`/like`, checkUser, async (req, res) => {
   }
 });
 
-module.exports= router;
+module.exports = router;

@@ -16,10 +16,12 @@ router.post(`/users`, async (req, res) => {
         message: "User already exists",
       });
     }
-
     const user = await db.collection("users").insertOne({
       name: name,
       email: email,
+      image: `https://ui-avatars.com/api/?background=random&name=${
+        name.split(" ")[0]
+      }`,
       password: password,
       posts: [],
       followers: [],

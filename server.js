@@ -4,6 +4,16 @@ const dotenv = require("dotenv");
 dotenv.config();
 const { dbConnection } = require("./config/database");
 dbConnection();
+const fileUpload = require("express-fileupload");
+
+const path = require('path');
+app.use(
+  fileUpload({
+    useTempFiles: true, 
+    tempFileDir: path.join(__dirname, 'tmp'), // Use local tmp directory
+  })
+);
+
 
 app.use(express.json());
 app.use(express.static(__dirname + "/public"));

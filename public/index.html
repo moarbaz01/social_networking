@@ -4,80 +4,230 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <link rel="stylesheet" href="./css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=favorite"
+    />
   </head>
-  <link rel="stylesheet" href="./css/style.css" />
   <body>
-    <header id="header">
-      <h1 id="logo">Fitness Social</h1>
-      <div id="header-btn-container">
-        <button
-          onclick="setCurrentSection(`login-page`)"
-          id="login-btn"
-          class="header-btn"
+    <!-- Header -->
+    <header id="header-container">
+      <div id="header">
+        <h1
+          onclick="setCurrentPage(`home`)"
+          style="cursor: pointer"
+          id="header-logo"
         >
-          Login
-        </button>
-        <button
-          onclick="setCurrentSection(`signup-page`)"
-          id="signup-btn"
-          class="header-btn"
-        >
-          Signup
-        </button>
-        <div id="search-btn" class="header-btn">
-          <img src="./assets/search.png" height="40" width="40" alt="sea" />
+          Fitness Club
+        </h1>
+        <div id="header-links-container">
+          <ul>
+            <li>Home</li>
+            <li>Profile</li>
+            <li>Posts</li>
+            <li>Users</li>
+          </ul>
+          <div id="header-buttons-container">
+            <button class="header-buttons auth-buttons" id="login-button">
+              Login
+            </button>
+            <button class="header-buttons auth-buttons" id="signup-button">
+              Signup
+            </button>
+            <button
+              class="header-buttons"
+              onclick="LogoutUser()"
+              id="logout-button"
+            >
+              Logout
+            </button>
+          </div>
         </div>
-        <button onclick="LogoutUser()" id="logout-btn" class="header-btn">
-          Log Out
-        </button>
       </div>
     </header>
-
-    <section id="signup-page" class="page">
-      <h1 class="heading">Sign Up</h1>
-      <form onsubmit="SignUpUser(event)">
-        <label for="signup-email">Enter Your Email</label>
-        <input required type="text" id="signup-email" placeholder="Email" />
-        <label for="signup-name">Enter Your Name</label>
-        <input required type="text" id="signup-name" placeholder="Name" />
-        <label for="signup-password">Enter Your Password</label>
-        <input
-          required
-          type="text"
-          id="signup-password"
-          placeholder="Password"
-        />
-        <button type="submit" class="btn">Sign Up</button>
-      </form>
-    </section>
-    <section id="login-page" class="page">
-      <h1 class="heading">Login</h1>
-      <form onsubmit="LoginUser(event)">
-        <label for="login-email">Enter Your Email</label>
-        <input
-          required
-          type="text"
-          id="login-email"
-          name="email"
-          placeholder="Email"
-        />
-        <label for="login-password">Enter Your Password</label>
-        <input
-          required
-          type="text"
-          id="login-password"
-          name="password"
-          placeholder="Password"
-        />
-        <button type="submit" class="btn">Log In</button>
-      </form>
-    </section>
-    <section id="home" class="page">
-      <div>
-        <h1 id="heading">Home</h1>
-        <h1 id="userName">Name</h1>
-        <h1 id="userEmail">Name</h1>
+    <nav id="phone-nav">
+      <ul>
+        <li data-page="home">Home</li>
+        <li data-page="profile">Profile</li>
+        <li data-page="posts">Posts</li>
+        <li data-page="users">Users</li>
+      </ul>
+    </nav>
+    <section class="page" id="signup">
+      <div class="signup-container">
+        <form onsubmit="SignUpUser(event)">
+          <h1 class="heading">Sign Up Form</h1>
+          <input
+            type="text"
+            placeholder="Enter your name"
+            required
+            id="signup-name"
+          />
+          <input
+            type="text"
+            placeholder="Enter your email"
+            required
+            id="signup-email"
+          />
+          <input
+            type="password"
+            placeholder="Enter your password"
+            id="signup-password"
+          />
+          <button type="submit" id="signup-form-button">Sign Up</button>
+        </form>
       </div>
+    </section>
+
+    <section class="page" id="login">
+      <div class="login-container">
+        <form onsubmit="LoginUser(event)">
+          <h1 class="heading">Login Form</h1>
+          <input
+            type="text"
+            placeholder="Enter your email"
+            required
+            id="login-email"
+          />
+          <input
+            type="text"
+            placeholder="Enter your password"
+            required
+            id="login-password"
+          />
+          <button type="submit" id="login-form-button">Login</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="page" id="home">
+      <button onclick="OpenPostModal()" class="create-post-button">
+        &#9998; Create Post
+      </button>
+      <div class="home-posts other-posts"></div>
+    </section>
+
+    <section class="page" id="profile">
+      <div class="profile-container">
+        <div class="profile-pic">
+          <img
+            src="https://via.placeholder.com/100"
+            class="profile-image"
+            alt="Profile Picture"
+          />
+          <h1 class="profile-name">My Name</h1>
+        </div>
+
+        <div class="profile-stats">
+          <div>Posts <span class="profile-stats-posts">19</span></div>
+          <div>Followers <span class="profile-stats-followers">20</span></div>
+          <div>Following <span class="profile-stats-following">53</span></div>
+        </div>
+
+        <div>
+          <button class="follow-button">Follow</button>
+          <button class="edit-profile-button">Edit Profile</button>
+        </div>
+      </div>
+      <h1 class="heading">Your Posts</h1>
+      <div class="home-posts profile-posts"></div>
+    </section>
+
+    <section class="page" id="users">
+      <h2 class="heading">Search Users</h2>
+      <input
+        type="text"
+        id="user-search"
+        oninput="searchUsers(event)"
+        placeholder="Search for users..."
+      />
+
+      <div class="users-list">
+        <!-- <div class="user-detail">
+          <div class="profile-image-container">
+            <img
+              src="https://ui-avatars.com/api/?name=John+Doe"
+              alt="User Profile"
+              class="profile-image"
+            />
+          </div>
+          <div class="user-info">
+            <h1>User Name</h1>
+            <p>Bio: Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+          </div>
+          <button class="follow-button" id="follow-button">Follow</button>
+        </div> -->
+      </div>
+    </section>
+
+    <section class="page" id="posts">
+      <h2 class="heading">Search Posts</h2>
+      <input
+        type="text"
+        oninput="searchPosts(event)"
+        id="postSearchInput"
+        placeholder="Search Posts by Title"
+      />
+      <div id="postList" class="home-posts">
+        <!-- Example Post -->
+        <!-- <div class="post">
+          <div class="post-user-details">
+            <div class="profile-image-container">
+              <img
+                src="https://via.placeholder.com/40"
+                alt="Post Author"
+                class="profile-image"
+              />
+            </div>
+            <h1>User Name</h1>
+          </div>
+          <div class="post-details">
+            <div class="post-image-container">
+              <img
+                class="post-image"
+                src="https://via.placeholder.com/300"
+                alt="Post Image"
+              />
+            </div>
+            <h1 class="post-title">Post Title</h1>
+            <p class="post-desc">This is an example description for a post.</p>
+            <div class="like-container">
+              <span class="material-symbols-outlined">favorite</span>
+              <span>10 Likes</span>
+            </div>
+          </div>
+        </div> -->
+      </div>
+    </section>
+
+    <section id="post-modal">
+      <form enctype="multipart/form-data" onsubmit="UploadPost(event)">
+        <h1 class="heading">Create Post</h1>
+        <input
+          type="text"
+          id="post-modal-title"
+          placeholder="Enter post title"
+          required
+        />
+        <input
+          type="text"
+          id="post-modal-description"
+          placeholder="Enter post description"
+          required
+        />
+        <input type="file" id="post-modal-image" accept="image/*" required />
+        <div class="post-modal-buttons">
+          <button type="submit" id="upload-post-button">Upload Post</button>
+          <button
+            type="button"
+            onclick="ClosePostModal()"
+            id="close-post-modal-button"
+          >
+            Close
+          </button>
+        </div>
+      </form>
     </section>
 
     <script src="./js/script.js"></script>
