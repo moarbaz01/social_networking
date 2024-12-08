@@ -3,10 +3,11 @@ const router = express.Router();
 const { db } = require("../config/database");
 const jwt = require("jsonwebtoken");
 const { checkUser } = require("../middleware/auth");
+const { ObjectId } = require("mongodb");
 
 router.post(`/users`, async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, bio } = req.body;
     console.log(name, email);
     const userExists = await db.collection("users").findOne({
       email: email,
@@ -22,6 +23,7 @@ router.post(`/users`, async (req, res) => {
       image: `https://ui-avatars.com/api/?background=random&name=${
         name.split(" ")[0]
       }`,
+      bio: bio,
       password: password,
       posts: [],
       followers: [],
@@ -31,6 +33,46 @@ router.post(`/users`, async (req, res) => {
     res.json({
       message: "User created successfully",
       user: user,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Something went wrong",
+    });
+  }
+});
+router.put(`/users`, checkUser, async (req, res) => {
+  try {
+    const { name, password, bio } = req.body;
+    const userId = req.user.id;
+    console.log(userId, req.body);
+
+    const userExists = await db.collection("users").findOne({
+      _id: ObjectId.createFromHexString(userId),
+    });
+    if (!userExists) {
+      return res.status(400).json({
+        message: "User Not Found",
+      });
+    }
+    await db.collection("users").updateOne(
+      {
+        _id: ObjectId.createFromHexString(userId),
+      },
+      {
+        $set: {
+          name: name || userExists.name,
+          image: `https://ui-avatars.com/api/?background=random&name=${
+            name.split(" ")[0] || userExists.name.split(" ")[0]
+          }`,
+          bio: bio || userExists.bio,
+          password: password || userExists.password,
+        },
+      }
+    );
+
+    res.json({
+      message: "User updated successfully",
     });
   } catch (error) {
     console.log(error);
@@ -53,6 +95,7 @@ router.get(`/users`, checkUser, async function (req, res) {
       users: users,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       message: "Something went wrong",
     });

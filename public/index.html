@@ -6,21 +6,15 @@
     <title>Document</title>
     <link rel="stylesheet" href="./css/style.css" />
     <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=favorite"
     />
   </head>
   <body>
     <!-- Header -->
     <header id="header-container">
       <div id="header">
-        <h1
-          onclick="setCurrentPage(`home`)"
-          style="cursor: pointer"
-          id="header-logo"
-        >
-          Fitness Club
-        </h1>
+        <h1 style="cursor: pointer" id="header-logo">Fitness Club</h1>
         <div id="header-links-container">
           <ul>
             <li>Home</li>
@@ -46,14 +40,14 @@
         </div>
       </div>
     </header>
-    <nav id="phone-nav">
+    <!-- <nav id="phone-nav">
       <ul>
         <li data-page="home">Home</li>
         <li data-page="profile">Profile</li>
         <li data-page="posts">Posts</li>
         <li data-page="users">Users</li>
       </ul>
-    </nav>
+    </nav> -->
     <section class="page" id="signup">
       <div class="signup-container">
         <form onsubmit="SignUpUser(event)">
@@ -76,6 +70,7 @@
             id="signup-password"
           />
           <button type="submit" id="signup-form-button">Sign Up</button>
+          <p style="margin-top: 10px;" onclick="setCurrentPage(`login`)">Login Your Account?</p>
         </form>
       </div>
     </section>
@@ -97,6 +92,7 @@
             id="login-password"
           />
           <button type="submit" id="login-form-button">Login</button>
+          <p style="margin-top: 10px;" onclick="setCurrentPage(`signup`)">Create new account?</p>
         </form>
       </div>
     </section>
@@ -116,6 +112,39 @@
             class="profile-image"
             alt="Profile Picture"
           />
+          <h1 class="profile-name" style="text-align: center; margin: 10px 0px">
+            My Name
+          </h1>
+          <p class="profile-bio">My Bio</p>
+        </div>
+
+        <div class="profile-stats">
+          <div>Posts <span class="profile-stats-posts">19</span></div>
+          <div>Followers <span class="profile-stats-followers">20</span></div>
+          <div>Following <span class="profile-stats-following">53</span></div>
+        </div>
+
+        <div class="profile-button-container">
+          <button class="edit-profile-button" onclick="OpenProfileEditModal()">
+            Edit Profile
+          </button>
+          <button onclick="LogoutUser()" id="logout-profile-button">
+            Logout
+          </button>
+        </div>
+      </div>
+      <h1 class="heading">Your Posts</h1>
+      <div class="home-posts profile-posts"></div>
+    </section>
+
+    <section class="page" id="profile-view">
+      <div class="profile-container">
+        <div class="profile-pic">
+          <img
+            src="https://via.placeholder.com/100"
+            class="profile-image"
+            alt="Profile Picture"
+          />
           <h1 class="profile-name">My Name</h1>
         </div>
 
@@ -127,7 +156,6 @@
 
         <div>
           <button class="follow-button">Follow</button>
-          <button class="edit-profile-button">Edit Profile</button>
         </div>
       </div>
       <h1 class="heading">Your Posts</h1>
@@ -166,39 +194,10 @@
       <input
         type="text"
         oninput="searchPosts(event)"
-        id="postSearchInput"
+        id="post-search-input"
         placeholder="Search Posts by Title"
       />
-      <div id="postList" class="home-posts">
-        <!-- Example Post -->
-        <!-- <div class="post">
-          <div class="post-user-details">
-            <div class="profile-image-container">
-              <img
-                src="https://via.placeholder.com/40"
-                alt="Post Author"
-                class="profile-image"
-              />
-            </div>
-            <h1>User Name</h1>
-          </div>
-          <div class="post-details">
-            <div class="post-image-container">
-              <img
-                class="post-image"
-                src="https://via.placeholder.com/300"
-                alt="Post Image"
-              />
-            </div>
-            <h1 class="post-title">Post Title</h1>
-            <p class="post-desc">This is an example description for a post.</p>
-            <div class="like-container">
-              <span class="material-symbols-outlined">favorite</span>
-              <span>10 Likes</span>
-            </div>
-          </div>
-        </div> -->
-      </div>
+      <div id="post-list" class="home-posts"></div>
     </section>
 
     <section id="post-modal">
@@ -229,6 +228,73 @@
         </div>
       </form>
     </section>
+
+    <section id="post-edit-modal">
+      <form enctype="multipart/form-data" onsubmit="UpdatePost(event)">
+        <h1 class="heading">Create Post</h1>
+        <input
+          type="text"
+          id="post-edit-modal-title"
+          placeholder="Enter post title"
+          required
+        />
+        <input
+          type="text"
+          id="post-edit-modal-description"
+          placeholder="Enter post description"
+          required
+        />
+        <div class="update-post-modal-buttons">
+          <button type="submit" id="update-post-button">Save Post</button>
+          <button
+            type="button"
+            onclick="CloseEditPostModal()"
+            id="close-edit-post-modal-button"
+          >
+            Close
+          </button>
+        </div>
+      </form>
+    </section>
+    <section id="profile-edit-modal">
+      <form enctype="multipart/form-data" onsubmit="UpdateProfile(event)">
+        <h1 class="heading">Update Profile</h1>
+        <input
+          type="text"
+          id="profile-edit-modal-name"
+          placeholder="Change your name"
+        />
+        <input
+          type="text"
+          id="profile-edit-modal-bio"
+          placeholder="Change your bio"
+        />
+        <input
+          type="text"
+          id="profile-edit-modal-password"
+          placeholder="Change your password"
+        />
+        <div class="profile-edit-modal-buttons">
+          <button type="submit" id="update-profile-button">
+            Update Profile
+          </button>
+          <button
+            type="button"
+            onclick="CloseProfileEditModal()"
+            id="close-profile-edit-form-button"
+          >
+            Close
+          </button>
+        </div>
+      </form>
+    </section>
+    <div
+      id="loading-indicator"
+      style="display: none; text-align: center; margin-top: 10px"
+    >
+      <div class="spinner"></div>
+      <span>Uploading, please wait...</span>
+    </div>
 
     <script src="./js/script.js"></script>
   </body>

@@ -13,7 +13,7 @@
   },
   "name": "social-networking-project",
   "version": "1.0.0",
-  "main": "database.js",
+  "main": "server.js",
   "keywords": [],
   "author": "",
   "license": "ISC",

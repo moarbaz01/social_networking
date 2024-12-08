@@ -1,7 +1,7 @@
 const mongoDB = require("mongodb");
 const MongoClient = mongoDB.MongoClient;
 
-const url = "mongodb://127.0.0.1:27017/social_networking_app";
+const url = process.env.MONGO_URI;
 const client = new MongoClient(url);
 const db = client.db("social_networking_app");
 

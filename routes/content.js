@@ -3,6 +3,7 @@ const router = express.Router();
 const { db } = require("../config/database");
 const { checkUser } = require("../middleware/auth");
 const uploadImage = require("../config/cloudinary");
+const { ObjectId } = require("mongodb");
 
 router.get(`/contents`, async (req, res) => {
   try {
@@ -45,17 +46,55 @@ router.get(`/contents/:id`, async (req, res) => {
   }
 });
 
+router.put(`/contents`, checkUser, async (req, res) => {
+  try {
+    const { title, desc, contentId } = req.body;
+    const id = req.user.id;
+    console.log(contentId, title);
+
+    const user = await db.collection("users").findOne({
+      _id: ObjectId.createFromHexString(id),
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    const content = await db.collection("contents").updateOne(
+      { _id: ObjectId.createFromHexString(contentId) },
+      {
+        $set: { title: title, desc: desc },
+      }
+    );
+    if (!content) {
+      return res.status(404).json({
+        message: "Error found creating content",
+      });
+    }
+
+    res.json({
+      message: "Content created successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Something went wrong",
+    });
+  }
+});
 router.post(`/contents`, checkUser, async (req, res) => {
   try {
     const { title, desc } = req.body;
-    const file = req.files?.image
-    if(req.files){
-      console.log("Req files: ",req.files?.image)
+    const file = req.files?.image;
+    if (req.files) {
+      console.log("Req files: ", req.files?.image);
     }
-    const email = req.user.email;
+    const id = req.user.id;
 
     const user = await db.collection("users").findOne({
-      email: email,
+      _id: ObjectId.createFromHexString(id),
     });
 
     if (!user) {
@@ -86,6 +125,17 @@ router.post(`/contents`, checkUser, async (req, res) => {
         message: "Error found creating content",
       });
     }
+
+    await db.collection("users").updateOne(
+      {
+        _id: ObjectId.createFromHexString(id),
+      },
+      {
+        $push: {
+          posts: content,
+        },
+      }
+    );
     res.json({
       message: "Content created successfully",
       content: content,
@@ -95,7 +145,6 @@ router.post(`/contents`, checkUser, async (req, res) => {
     res.status(500).json({
       message: "Something went wrong",
     });
- 
   }
 });
 
@@ -105,7 +154,7 @@ router.delete(`/contents/:id`, checkUser, async (req, res) => {
     const userId = req.user.id;
 
     const user = await db.collection("users").findOne({
-      _id: userId,
+      _id: ObjectId.createFromHexString(userId),
     });
     if (!user) {
       return res.status(404).json({
@@ -114,7 +163,7 @@ router.delete(`/contents/:id`, checkUser, async (req, res) => {
     }
 
     const content = await db.collection("contents").findOne({
-      _id: id,
+      _id: ObjectId.createFromHexString(id),
     });
     if (!content) {
       return res.status(404).json({
@@ -122,14 +171,14 @@ router.delete(`/contents/:id`, checkUser, async (req, res) => {
       });
     }
 
-    if (content.userId !== userId) {
+    if (content.author._id != userId) {
       return res.status(401).json({
         message: "Unauthorized",
       });
     }
 
     await db.collection("contents").deleteOne({
-      _id: id,
+      _id: ObjectId.createFromHexString(id),
     });
 
     res.json({
@@ -146,19 +195,28 @@ router.post(`/like`, checkUser, async (req, res) => {
   try {
     const { contentId } = req.body;
     const userId = req.user.id;
-
+    console.log(contentId);
     const user = await db.collection("users").findOne({
-      _id: userId,
+      _id: ObjectId.createFromHexString(userId),
     });
     if (!user) {
       return res.status(404).json({
         message: "User not found",
       });
     }
+    const content = await db.collection("contents").findOne({
+      _id: ObjectId.createFromHexString(contentId),
+    });
 
+    const isLiked = content.likes.includes(userId);
+    if (isLiked) {
+      return res.status(400).json({
+        message: "Content already liked",
+      });
+    }
     await db.collection("contents").updateOne(
       {
-        _id: contentId,
+        _id: ObjectId.createFromHexString(contentId),
       },
       {
         $push: {
@@ -177,13 +235,13 @@ router.post(`/like`, checkUser, async (req, res) => {
   }
 });
 
-router.delete(`/like`, checkUser, async (req, res) => {
+router.delete(`/like/:id`, checkUser, async (req, res) => {
   try {
-    const { contentId } = req.body;
+    const contentId = req.params.id;
     const userId = req.user.id;
-
+    console.log(contentId);
     const user = await db.collection("users").findOne({
-      _id: userId,
+      _id: ObjectId.createFromHexString(userId),
     });
     if (!user) {
       return res.status(404).json({
@@ -191,9 +249,20 @@ router.delete(`/like`, checkUser, async (req, res) => {
       });
     }
 
+    const content = await db.collection("contents").findOne({
+      _id: ObjectId.createFromHexString(contentId),
+    });
+
+    const isLiked = content.likes.includes(userId);
+    if (!isLiked) {
+      return res.status(400).json({
+        message: "Content not liked",
+      });
+    }
+
     await db.collection("contents").updateOne(
       {
-        _id: contentId,
+        _id: ObjectId.createFromHexString(contentId),
       },
       {
         $pull: {

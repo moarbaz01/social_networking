@@ -44,16 +44,16 @@ img {
 
 #header-links-container ul {
   list-style: none;
-  display: flex;
+  display: none;
   gap: 20px;
   margin: 0;
   padding: 0;
 }
 
 #header-links-container ul li {
+  padding: 10px;
   cursor: pointer;
-  padding: 8px 15px;
-  transition: background-color 0.3s ease;
+  border-bottom: 1px solid #444;
 }
 
 #header-links-container ul li:hover {
@@ -93,27 +93,6 @@ img {
 .header-buttons:hover {
   opacity: 0.9;
   background-color: #333;
-}
-
-/* Navigation for Small Screens */
-#phone-nav {
-  display: none;
-  background-color: #111;
-  color: white;
-}
-
-#phone-nav ul {
-  display: flex;
-  gap: 20px;
-  list-style: none;
-  padding: 10px;
-  margin: 0;
-}
-
-#phone-nav ul li {
-  padding: 10px;
-  cursor: pointer;
-  border-bottom: 1px solid #444;
 }
 
 .page.active {
@@ -261,7 +240,12 @@ img {
 #login-form-button,
 #post-modal-form-button,
 #upload-post-button,
-#close-post-modal-button {
+#close-post-modal-button,
+#update-profile-button,
+#close-profile-edit-form-button,
+#update-post-button,
+#close-edit-post-modal-button,
+#logout-profile-button {
   background-color: #555;
   color: white;
   border: none;
@@ -275,21 +259,26 @@ img {
 .edit-profile-button:hover,
 #signup-form-button:hover,
 #login-form-button:hover,
-#post-modal-form-button,
-#upload-post-button,
-#close-post-modal-button {
+#post-modal-form-button:hover,
+#upload-post-button:hover,
+#close-post-modal-button:hover,
+#update-profile-button:hover,
+#close-profile-edit-form-button:hover,
+#update-post-button:hover,
+#close-edit-post-modal-button:hover,
+#logout-profile-button {
   background-color: #444;
 }
 
 input {
-  width: 100%; /* Ensure full width of the container */
+  width: 100%;
   padding: 12px;
   margin-bottom: 30px;
   border: 1px solid #444;
   border-radius: 4px;
   background-color: #333;
   color: white;
-  font-size: 16px; /* Add a standard font-size */
+  font-size: 16px;
 }
 
 .signup-container,
@@ -303,7 +292,9 @@ input {
 
 .signup-container form,
 .login-container form,
-#post-modal form {
+#post-modal form,
+#profile-edit-modal form,
+#post-edit-modal form {
   display: flex;
   width: 500px;
   padding: 20px;
@@ -313,13 +304,22 @@ input {
   justify-content: center;
 }
 
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
 /* Page Sections */
 .page {
   display: none;
   padding: 20px;
 }
 
-#post-modal {
+#post-modal,
+#profile-edit-modal,
+#post-edit-modal {
   height: 100vh;
   width: 100%;
   position: fixed;
@@ -345,16 +345,38 @@ input {
   margin: 10px 0px;
 }
 
-.post-modal-buttons {
+.liked {
+  color: white;
+}
+
+.post-modal-buttons,
+.profile-edit-modal-buttons,
+.update-post-modal-buttons {
   display: flex;
   gap: 20px;
   align-items: center;
 }
 
-/* Responsive Styles */
-@media (max-width: 768px) {
-  #header-links-container {
+.material-icons {
+  cursor: pointer;
+}
+
+#logout-profile-button {
+  display: none;
+}
+
+.profile-button-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+@media screen and (width<= 768px) {
+  #header-buttons-container {
     display: none;
+  }
+  #header-links-container{
+    margin-top: 10px;
   }
 
   #header {
@@ -368,8 +390,12 @@ input {
     font-size: 14px;
   }
 
+  #logout-profile-button {
+    display: block;
+  }
+
   #phone-nav {
-    display: flex;
+    display: block;
     align-items: center;
     justify-content: center;
   }
